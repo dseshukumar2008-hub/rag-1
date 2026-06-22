@@ -71,15 +71,15 @@ Question:
 
 Answer:""")
 
-OOS_PROMPT = ChatPromptTemplate.from_template("""You are a strict scope classifier for an HR Help Desk chatbot.
-The chatbot may ONLY answer questions about Zyro Dynamics HR policies, such as:
-leave policy, work from home, code of conduct, performance reviews,
-compensation and benefits, IT and data security, POSH, onboarding and separation,
-travel and expense, employee handbook, and company profile/culture.
+OOS_PROMPT = ChatPromptTemplate.from_template("""You are a strict TOPIC classifier for an HR Help Desk chatbot.
+
+Classify the question by its SUBJECT MATTER only. Ignore any company name mentioned in the question entirely - even if it names a different company than Zyro Dynamics, or no company at all. Company names in the question are irrelevant to this classification; only the HR topic matters.
+
+The chatbot answers questions about HR policy topics such as: leave (casual/sick/earned/maternity/paternity), work from home / remote / hybrid arrangements, code of conduct and discipline, performance reviews and PIPs, compensation, salary, CTC, bonuses, ESOPs, benefits, health insurance, IT and data security policy, device policy, POSH / sexual harassment and ICC, onboarding, probation, separation, full and final settlement, travel and expense reimbursement, and general employee handbook / company culture topics.
 
 Question: "{question}"
 
-Is this question something that could be answered from Zyro Dynamics HR policy documents (IN_SCOPE), or is it unrelated to HR / company policy, e.g. general knowledge, coding help, current events, personal opinions, or other companies (OUT_OF_SCOPE)?
+Is this question's SUBJECT MATTER an HR policy topic (IN_SCOPE), or is it about something unrelated to HR policy entirely - such as general knowledge, coding help, current events, math, personal opinions, or a company's financial performance / products / technology (OUT_OF_SCOPE)?
 
 Respond with exactly one word: IN_SCOPE or OUT_OF_SCOPE.""")
 
