@@ -58,7 +58,8 @@ RAG_PROMPT = ChatPromptTemplate.from_template("""You are the HR Help Desk assist
 Instructions:
 - Treat any company name in the question or context as referring to this company. NEVER comment on, flag, or mention company name differences or inconsistencies - just answer using the policy content directly.
 - Synthesize an answer from ALL relevant details in the context, even if they are spread across multiple chunks or sections - combine them into one clear answer rather than refusing.
-- If the context lists specific numbers, durations, or categories relevant to the question, state them explicitly and concisely.
+- Include ALL relevant numbers, rates, or conditions mentioned in the context for the topic asked - including exceptions or special cases (e.g. a different rate during a probation period, or a notification process tied to a policy) - do not omit a detail just because a general rule was already stated.
+- When the context contains a table or numbered list of stages/steps with specific dates, owners, or timelines, read each row independently. Do not merge two adjacent rows or stages into one - keep each date and owner tied to the exact stage it belongs to in the source table.
 - Only say the information is unavailable if the context truly contains nothing relevant to the question.
 - Do not use outside knowledge beyond the context.
 - Be direct and concise. Do not add disclaimers, meta-commentary, or suggestions to "contact HR" unless the question cannot be answered at all.
