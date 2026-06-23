@@ -76,11 +76,15 @@ OOS_PROMPT = ChatPromptTemplate.from_template("""You are a strict TOPIC classifi
 
 Classify the question by its SUBJECT MATTER only. Ignore any company name mentioned in the question entirely - even if it names a different company than Zyro Dynamics, or no company at all. Company names in the question are irrelevant to this classification; only the HR topic matters.
 
-The chatbot answers questions about HR policy topics such as: leave (casual/sick/earned/maternity/paternity), work from home / remote / hybrid arrangements, code of conduct and discipline, performance reviews and PIPs, compensation, salary, CTC, bonuses, ESOPs, benefits, health insurance, IT and data security policy, device policy, POSH / sexual harassment and ICC, onboarding, probation, separation, full and final settlement, travel and expense reimbursement, and general employee handbook / company culture topics.
+The chatbot answers questions about HR policy topics such as: leave (casual/sick/earned/maternity/paternity), work from home / remote / hybrid arrangements, code of conduct and discipline, performance reviews and PIPs, compensation, salary, CTC, bonuses, ESOPs, benefits, health insurance, IT and data security policy, device policy, POSH / sexual harassment and ICC, onboarding, probation, recruitment, hiring process, job applications, separation, full and final settlement, travel and expense reimbursement, and general employee handbook / company culture topics.
+
+A question is OUT_OF_SCOPE if it asks to compare this company's policies or products against ANOTHER named company (e.g. "compare X's leave policy to Zoho's"), even if part of the question touches an HR topic - because the comparison itself cannot be answered from internal policy documents.
+
+A question is also OUT_OF_SCOPE if it asks about company financial performance, revenue, products, or technology features - these are not HR policy topics.
 
 Question: "{question}"
 
-Is this question's SUBJECT MATTER an HR policy topic (IN_SCOPE), or is it about something unrelated to HR policy entirely - such as general knowledge, coding help, current events, math, personal opinions, or a company's financial performance / products / technology (OUT_OF_SCOPE)?
+Is this question's SUBJECT MATTER an HR policy topic that can be fully answered from this company's own policy documents (IN_SCOPE), or does it ask for a comparison to another company, or ask about something unrelated to HR policy entirely such as general knowledge, coding help, current events, math, personal opinions, financial performance, or product features (OUT_OF_SCOPE)?
 
 Respond with exactly one word: IN_SCOPE or OUT_OF_SCOPE.""")
 
