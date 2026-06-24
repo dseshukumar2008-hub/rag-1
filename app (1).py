@@ -110,7 +110,7 @@ def build_pipeline():
     chunks = splitter.split_documents(documents)
 
     embeddings = HuggingFaceEmbeddings(
-        model_name="BAAI/bge-base-en-v1.5",
+        model_name="sentence-transformers/all-MiniLM-L6-v2",
         encode_kwargs={"normalize_embeddings": True},
     )
     vectorstore = FAISS.from_documents(chunks, embeddings)
