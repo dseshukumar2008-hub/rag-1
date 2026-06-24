@@ -53,16 +53,23 @@ REFUSAL_MESSAGE = (
     "(e.g. leave, WFH, benefits, conduct, onboarding, etc.)?"
 )
 
-RAG_PROMPT = ChatPromptTemplate.from_template("""You are the HR Help Desk assistant. Answer the employee's question using the information in the context below.
+RAG_PROMPT = ChatPromptTemplate.from_template("""
+You are the HR Help Desk assistant.
+
+Answer the employee's question using ONLY the information provided in the context.
 
 Instructions:
-- Treat any company name in the question or context as referring to this company. NEVER comment on, flag, or mention company name differences or inconsistencies - just answer using the policy content directly.
-- Synthesize an answer from ALL relevant details in the context, even if they are spread across multiple chunks or sections - combine them into one clear answer rather than refusing.
-- If the context lists specific numbers, durations, or categories relevant to the question, state them explicitly and concisely.
-- Only say the information is unavailable if the context truly contains nothing relevant to the question.
-- Do not use outside knowledge beyond the context.
-- Be direct and concise. Do not add disclaimers, meta-commentary, or suggestions to "contact HR" unless the question cannot be answered at all.
-- Mention the specific policy document when relevant, but do not pad the answer with extra caveats.
+
+- Combine information from multiple policy sections when relevant.
+- Extract exact numbers, percentages, limits, eligibility criteria,
+  reimbursement amounts, notice periods, leave balances,
+  working hours, approval requirements, and policy conditions.
+- Prefer precise factual answers over summaries.
+- If multiple policies contribute to the answer, synthesize them.
+- Do not invent information.
+- Do not use outside knowledge.
+- Only say information is unavailable if no relevant policy exists.
+- Be concise but complete.
 
 Context:
 {context}
@@ -70,7 +77,8 @@ Context:
 Question:
 {question}
 
-Answer:""")
+Answer:
+""")
 
 OOS_PROMPT = ChatPromptTemplate.from_template("""You are a strict TOPIC classifier for an HR Help Desk chatbot.
 
@@ -103,20 +111,20 @@ def build_pipeline():
         st.stop()
 
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=600,
-        chunk_overlap=200,
+        chunk_size=1000,
+        chunk_overlap=150,
         separators=["\n\n", "\n", ". ", " ", ""],
     )
     chunks = splitter.split_documents(documents)
 
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
+        model_name="BAAI/bge-base-en-v1.5",
         encode_kwargs={"normalize_embeddings": True},
     )
     vectorstore = FAISS.from_documents(chunks, embeddings)
     retriever = vectorstore.as_retriever(
-        search_type="mmr",
-        search_kwargs={"k": 8, "fetch_k": 30, "lambda_mult": 0.8},
+        search_type="similarity",
+        search_kwargs={"k": 12},
     )
 
     llm = ChatGroq(model=LLM_MODEL, temperature=0.1, max_tokens=512)
